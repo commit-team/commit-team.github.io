@@ -5,15 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>A place shared with you · ChiTransit</title>
-<meta name="description" content="Open a place a friend shared in ChiTransit, or in Google Maps.">
+<title>A place shared with you · LoopGoer</title>
+<meta name="description" content="Open a place a friend shared in LoopGoer, or in Google Maps.">
+<!-- The link card chat apps draw. Only their previewers fetch the image; the page itself loads nothing. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LoopGoer">
+<meta property="og:title" content="A place shared with you · LoopGoer">
+<meta property="og:description" content="Open a place a friend shared in LoopGoer, or in Google Maps.">
+<meta property="og:image" content="https://loopgoer.com/assets/og/loopgoer-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <!--
   The page a shared location link opens: https://<our domain>/place?lat=…&lon=…&name=…
   (mobile/src/share/sharedPlace.ts writes these links). Self-contained on purpose - no scripts, fonts or
   images from anywhere else - so it costs one request and leaks the shared spot to nobody.
 
   With verified App Links (see share-web/README.md) a phone that has the app opens it directly and never
-  shows this page. So whoever sees it is, mostly, a friend without ChiTransit: it opens the app if it is
+  shows this page. So whoever sees it is, mostly, a friend without LoopGoer: it opens the app if it is
   there after all, sends them to the store if not, and offers Google Maps either way.
 
   The link's parameters are permanent - a message sent today is tapped next year: lat, lon, name.
@@ -60,6 +69,7 @@
   .stores { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--rule); }
   .stores p { margin: 0 0 10px; text-align: center; font-size: 13px; color: var(--muted); }
   .note { margin: 14px 0 0; text-align: center; font-size: 13px; color: var(--muted); }
+  .legal { margin: 22px 0 0; text-align: center; font-size: 12px; color: var(--muted); }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -75,17 +85,17 @@
   <div class="actions" id="actions">
     <a class="btn btn--primary" id="open-app" href="#">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-4 0-8 .5-8 4v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zm3.5-7H6V6h5zm2 0V6h5v4zm3.5 7a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5z"/></svg>
-      Open in ChiTransit
+      Open in LoopGoer
     </a>
     <a class="btn" id="open-maps" href="#" rel="noopener">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9a.5.5 0 0 0-.36.48V20.5a.5.5 0 0 0 .5.5l.16-.03L9 18.9l6 2.1 5.64-1.9a.5.5 0 0 0 .36-.48V3.5a.5.5 0 0 0-.5-.5zM15 19l-6-2.11V5l6 2.11z"/></svg>
       Open in Google Maps
     </a>
   </div>
-  <p class="note" id="trying" hidden>Opening ChiTransit… If nothing happens, get the app below.</p>
+  <p class="note" id="trying" hidden>Opening LoopGoer… If nothing happens, get the app below.</p>
 
   <div class="stores">
-    <p>Don’t have ChiTransit yet?</p>
+    <p>Don’t have LoopGoer yet?</p>
     <div class="actions">
       <a class="btn" id="play" href="https://play.google.com/store/apps/details?id=com.committeam.chitransit" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.3a1.5 1.5 0 0 0-.6 1.2v17a1.5 1.5 0 0 0 .6 1.2l9.7-9.7zm10.8 10.8L5.2 22.3l10.9-6.3zM17.7 9.4l-1.6-.9-2.7 2.5 2.7 2.7 1.6-.9a1.5 1.5 0 0 0 0-3.4zM5.2 1.7l9.2 9.2 1.7-1.7z"/></svg>
@@ -97,6 +107,7 @@
       </span>
     </div>
   </div>
+  <p class="legal">&copy; 2026 Commit Ventures LLC</p>
 </main>
 
 <script>
@@ -113,7 +124,7 @@
     // Text only: the name came from a link anyone can write, so it is never parsed as HTML.
     var name = (query.get('name') || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
     document.getElementById('name').textContent = valid ? (name || 'Shared location') : 'This link has no place in it';
-    if (name && valid) document.title = name + ' · ChiTransit';
+    if (name && valid) document.title = name + ' · LoopGoer';
 
     var openApp = document.getElementById('open-app');
     var openMaps = document.getElementById('open-maps');
@@ -124,7 +135,7 @@
     }
 
     var params = 'lat=' + lat.toFixed(5) + '&lon=' + lon.toFixed(5) + '&name=' + encodeURIComponent(name || 'Shared location');
-    var scheme = 'chitransit://place?' + params;
+    var scheme = 'loopgoer://place?' + params;
     openMaps.href = 'https://www.google.com/maps/search/?api=1&query=' + lat.toFixed(5) + ',' + lon.toFixed(5);
 
     var ua = navigator.userAgent;
@@ -133,7 +144,7 @@
 
     if (android) {
       // Chrome's intent link: opens the app when it is installed, and the Play Store page when it is not.
-      openApp.href = 'intent://place?' + params + '#Intent;scheme=chitransit;package=' + PACKAGE +
+      openApp.href = 'intent://place?' + params + '#Intent;scheme=loopgoer;package=' + PACKAGE +
         ';S.browser_fallback_url=' + encodeURIComponent(PLAY) + ';end';
       // Tried once on arrival, which is the redirect a friend expects. Some browsers only follow it from a
       // tap - then the buttons are the way, and Google Maps stays one tap away either way.
